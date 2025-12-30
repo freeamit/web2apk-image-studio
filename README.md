@@ -1,49 +1,43 @@
 # Web2APK Image Studio
 
-A comprehensive image processing and conversion tool designed to facilitate the transformation of web-based content into APK applications with optimized media handling.
+A comprehensive image studio application for converting web applications into Android APK packages. This tool streamlines the process of turning web-based projects into native Android applications with advanced image processing and packaging capabilities.
 
 ## Table of Contents
 
-- [Overview](#overview)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
-- [Deployment Instructions](#deployment-instructions)
 - [Configuration](#configuration)
+- [Deployment](#deployment)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Overview
-
-Web2APK Image Studio is a powerful tool that streamlines the process of converting web applications into Android APK files with integrated image optimization and processing capabilities. It provides automated workflows for handling various image formats and resolutions commonly needed in mobile applications.
-
 ## Features
 
-- **Image Conversion**: Convert images between multiple formats (PNG, JPG, WebP, etc.)
-- **Batch Processing**: Process multiple images simultaneously
-- **Optimization**: Reduce file sizes while maintaining quality
-- **Resizing & Scaling**: Automatically scale images for different device resolutions
-- **Format Conversion**: Transform web-based media for APK compatibility
-- **Quality Control**: Built-in validation and quality assurance tools
+- **Web to APK Conversion**: Seamlessly convert web applications to Android APK files
+- **Image Processing**: Advanced image manipulation and optimization tools
+- **Project Management**: Organize and manage multiple projects
+- **Packaging Tools**: Built-in APK packaging and signing utilities
+- **Cross-platform Support**: Works on Windows, macOS, and Linux
+- **Batch Processing**: Convert multiple applications simultaneously
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+Before setting up Web2APK Image Studio, ensure you have the following installed:
 
-- **Node.js**: v14.0.0 or higher
-- **npm** or **yarn**: Latest version
-- **Docker**: v20.0.0 or higher (for containerized deployment)
-- **Git**: Latest version
-- **Python**: v3.8+ (if using Python-based image processing tools)
-- **ImageMagick** or **libvips**: For advanced image processing
+- **Node.js** (v14.0.0 or higher) - [Download](https://nodejs.org/)
+- **npm** (v6.0.0 or higher) - Included with Node.js
+- **Git** - [Download](https://git-scm.com/)
+- **Java Development Kit (JDK)** (v8 or higher) - Required for APK building
+- **Android SDK** - For APK compilation and packaging
+- **Gradle** (v6.0 or higher) - For build management
 
-### System Requirements
+### Optional Requirements
 
-- **OS**: Linux, macOS, or Windows with WSL2
-- **RAM**: Minimum 2GB, recommended 4GB+
-- **Disk Space**: At least 500MB free space
+- **Docker** - For containerized deployment
+- **Python** (v3.7 or higher) - For helper scripts
 
 ## Setup Instructions
 
@@ -56,408 +50,298 @@ cd web2apk-image-studio
 
 ### 2. Install Dependencies
 
-Using npm:
 ```bash
 npm install
 ```
 
-Or using yarn:
-```bash
-yarn install
-```
-
 ### 3. Environment Configuration
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the project root directory:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your configuration:
+Edit `.env` and configure the following variables:
 
 ```env
 # Application Settings
+APP_NAME=Web2APK Image Studio
+APP_VERSION=1.0.0
 NODE_ENV=development
 PORT=3000
+
+# Paths
+ANDROID_SDK_PATH=/path/to/android/sdk
+JAVA_HOME=/path/to/java/home
+GRADLE_HOME=/path/to/gradle
+
+# Build Settings
+APK_OUTPUT_DIR=./build/apk
+TEMP_BUILD_DIR=./build/temp
 LOG_LEVEL=info
 
-# Image Processing
-MAX_IMAGE_SIZE=52428800
-SUPPORTED_FORMATS=png,jpg,jpeg,webp,gif
-OPTIMIZATION_QUALITY=85
-
-# API Keys (if required)
-API_KEY=your_api_key_here
-
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=web2apk
-DB_USER=postgres
-DB_PASSWORD=your_password
-
-# Storage
-STORAGE_PATH=./uploads
-OUTPUT_PATH=./output
-```
-
-### 4. Install System Dependencies
-
-**For Ubuntu/Debian:**
-```bash
-sudo apt-get update
-sudo apt-get install imagemagick libvips python3 python3-pip
-```
-
-**For macOS:**
-```bash
-brew install imagemagick libvips python3
-```
-
-**For Windows:**
-Download and install from official sources:
-- ImageMagick: https://imagemagick.org/script/download.php
-- libvips: https://github.com/libvips/libvips
-
-### 5. Initialize Database (if applicable)
-
-```bash
-npm run db:migrate
-npm run db:seed
-```
-
-### 6. Verify Installation
-
-```bash
-npm run test
-npm run health-check
-```
-
-## Deployment Instructions
-
-### Option 1: Traditional Server Deployment
-
-#### 1. Build the Application
-
-```bash
-npm run build
-```
-
-#### 2. Start the Application
-
-**Development:**
-```bash
-npm run dev
-```
-
-**Production:**
-```bash
-npm run start
-```
-
-The application will be available at `http://localhost:3000`
-
-#### 3. Process Management
-
-Using PM2 for production:
-
-```bash
-# Install PM2 globally
-npm install -g pm2
-
-# Start application with PM2
-pm2 start npm --name "web2apk-studio" -- start
-
-# Monitor
-pm2 monit
-
-# Logs
-pm2 logs web2apk-studio
-
-# Restart
-pm2 restart web2apk-studio
-
-# Stop
-pm2 stop web2apk-studio
-```
-
-### Option 2: Docker Deployment
-
-#### 1. Build Docker Image
-
-```bash
-docker build -t web2apk-image-studio:latest .
-```
-
-#### 2. Run Docker Container
-
-```bash
-docker run -d \
-  --name web2apk-studio \
-  -p 3000:3000 \
-  -v $(pwd)/uploads:/app/uploads \
-  -v $(pwd)/output:/app/output \
-  --env-file .env \
-  web2apk-image-studio:latest
-```
-
-#### 3. Docker Compose (Recommended)
-
-```bash
-docker-compose up -d
-```
-
-View logs:
-```bash
-docker-compose logs -f web2apk-studio
-```
-
-#### 4. Manage Container
-
-```bash
-# Stop
-docker-compose down
-
-# Rebuild and restart
-docker-compose up -d --build
-
-# Execute commands
-docker-compose exec web2apk-studio npm run db:migrate
-```
-
-### Option 3: Cloud Deployment
-
-#### Heroku
-
-```bash
-# Install Heroku CLI
-npm install -g heroku
-
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create web2apk-image-studio
-
-# Set environment variables
-heroku config:set NODE_ENV=production
-heroku config:set API_KEY=your_api_key
-
-# Deploy
-git push heroku main
-
-# View logs
-heroku logs --tail
-```
-
-#### AWS EC2
-
-1. Launch an EC2 instance (Ubuntu 20.04 LTS recommended)
-2. SSH into the instance
-3. Follow the Traditional Server Deployment steps
-4. Configure security groups to allow ports 80, 443, and 3000
-5. Set up Nginx as a reverse proxy
-
-#### Google Cloud Run
-
-```bash
-# Build and push image
-gcloud builds submit --tag gcr.io/PROJECT_ID/web2apk-studio
-
-# Deploy
-gcloud run deploy web2apk-studio \
-  --image gcr.io/PROJECT_ID/web2apk-studio \
-  --platform managed \
-  --region us-central1
-```
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| NODE_ENV | development | Environment mode |
-| PORT | 3000 | Application port |
-| LOG_LEVEL | info | Logging level |
-| MAX_IMAGE_SIZE | 52428800 | Max upload size (bytes) |
-| OPTIMIZATION_QUALITY | 85 | Image quality (1-100) |
-| STORAGE_PATH | ./uploads | Upload directory |
-| OUTPUT_PATH | ./output | Output directory |
-
-### API Configuration
-
-If your application uses external APIs:
-
-```env
-API_ENDPOINT=https://api.example.com
-API_VERSION=v1
+# API Configuration
+API_HOST=localhost
+API_PORT=3000
 API_TIMEOUT=30000
 ```
 
+### 4. Verify Installation
+
+```bash
+npm run verify
+```
+
+This will check that all prerequisites are properly installed and configured.
+
+## Configuration
+
+### Android SDK Setup
+
+1. **Download Android SDK**: Install via Android Studio or download command-line tools
+2. **Set ANDROID_SDK_PATH**: Update your `.env` file with the SDK location
+3. **Install Build Tools**: 
+   ```bash
+   $ANDROID_SDK_PATH/tools/bin/sdkmanager "build-tools;31.0.0"
+   $ANDROID_SDK_PATH/tools/bin/sdkmanager "platforms;android-31"
+   ```
+
+### Java Configuration
+
+Ensure JAVA_HOME points to your JDK installation:
+
+```bash
+# macOS/Linux
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+# Windows
+set JAVA_HOME=C:\Program Files\Java\jdk-11
+```
+
+### Gradle Configuration
+
+Initialize Gradle wrapper:
+
+```bash
+gradle wrapper --gradle-version 6.9
+```
+
+## Deployment
+
+### Development Deployment
+
+1. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:3000`
+
+2. **View logs**:
+   ```bash
+   npm run logs
+   ```
+
+### Production Deployment
+
+1. **Build the application**:
+   ```bash
+   npm run build
+   ```
+
+2. **Start the production server**:
+   ```bash
+   npm start
+   ```
+
+3. **Setup reverse proxy** (recommended with Nginx):
+   ```nginx
+   server {
+       listen 80;
+       server_name yourdomain.com;
+
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+### Docker Deployment
+
+1. **Build Docker image**:
+   ```bash
+   docker build -t web2apk-image-studio:latest .
+   ```
+
+2. **Run container**:
+   ```bash
+   docker run -d \
+     -p 3000:3000 \
+     -v /path/to/android/sdk:/android/sdk \
+     -e ANDROID_SDK_PATH=/android/sdk \
+     --name web2apk \
+     web2apk-image-studio:latest
+   ```
+
+3. **Docker Compose** (if available):
+   ```bash
+   docker-compose up -d
+   ```
+
+### Cloud Deployment (Heroku)
+
+1. **Install Heroku CLI**:
+   ```bash
+   npm install -g heroku
+   ```
+
+2. **Login and create app**:
+   ```bash
+   heroku login
+   heroku create your-app-name
+   ```
+
+3. **Configure buildpack**:
+   ```bash
+   heroku buildpacks:add heroku/jvm
+   heroku buildpacks:add heroku/nodejs
+   ```
+
+4. **Set environment variables**:
+   ```bash
+   heroku config:set ANDROID_SDK_PATH=/app/.android-sdk
+   ```
+
+5. **Deploy**:
+   ```bash
+   git push heroku main
+   ```
+
 ## Usage
+
+### Basic Conversion
+
+1. **Open the web interface**: Navigate to `http://localhost:3000`
+2. **Select web application**: Choose the source web app or enter URL
+3. **Configure settings**: Set APK name, version, permissions, etc.
+4. **Process**: Click "Convert to APK" and wait for completion
+5. **Download**: Save the generated APK file
 
 ### Command Line Interface
 
 ```bash
-# Process a single image
-npm run process --image=path/to/image.jpg --format=png
+# Convert single application
+npm run convert -- --input ./web-app --output ./output.apk
 
-# Batch process
-npm run process-batch --input=./images --output=./optimized
+# Batch convert multiple apps
+npm run batch-convert -- --config batch-config.json
 
-# Generate reports
-npm run generate-report --date=2025-12-30
+# Process images
+npm run process-images -- --input ./images --output ./optimized
 
-# List available formats
-npm run list-formats
+# Sign APK
+npm run sign-apk -- --apk ./app.apk --keystore ./key.jks --password yourpassword
 ```
 
-### API Endpoints
+### Configuration Files
 
-```bash
-# Health check
-curl http://localhost:3000/health
+Create `config.json` for project-specific settings:
 
-# Upload and convert image
-curl -X POST \
-  -F "image=@image.jpg" \
-  -F "format=png" \
-  http://localhost:3000/api/convert
-
-# Get processing status
-curl http://localhost:3000/api/status/:jobId
+```json
+{
+  "project": {
+    "name": "MyApp",
+    "version": "1.0.0",
+    "packageName": "com.example.myapp"
+  },
+  "apk": {
+    "minSdk": 21,
+    "targetSdk": 31,
+    "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"],
+    "features": ["android.hardware.screen.portrait"]
+  },
+  "images": {
+    "optimize": true,
+    "compression": "high"
+  }
+}
 ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-#### Port Already in Use
+**Issue**: "ANDROID_SDK_PATH not found"
+- **Solution**: Verify the Android SDK path in `.env` file and ensure it exists
+
+**Issue**: "Java not found"
+- **Solution**: Set JAVA_HOME environment variable and restart terminal
+
+**Issue**: Build timeout
+- **Solution**: Increase timeout in `.env`: `API_TIMEOUT=60000`
+
+**Issue**: APK signing fails
+- **Solution**: Verify keystore file exists and password is correct
+
+**Issue**: Port 3000 already in use
+- **Solution**: Change port in `.env` or kill existing process: `lsof -ti:3000 | xargs kill -9`
+
+### Debugging
+
+Enable debug mode for more detailed logging:
 
 ```bash
-# Find process using port 3000
-lsof -i :3000
-
-# Kill process
-kill -9 <PID>
-
-# Or change port
-PORT=3001 npm start
+DEBUG=web2apk:* npm run dev
 ```
 
-#### Image Processing Errors
+View logs in real-time:
 
 ```bash
-# Verify ImageMagick installation
-convert --version
-
-# Check libvips installation
-vips --version
-
-# Reinstall dependencies
-npm install --force
+tail -f logs/app.log
 ```
-
-#### Docker Issues
-
-```bash
-# Check container logs
-docker logs web2apk-studio
-
-# Rebuild with no cache
-docker-compose build --no-cache
-
-# Clean up containers
-docker-compose down -v
-```
-
-#### Database Connection
-
-```bash
-# Test database connection
-npm run db:test
-
-# Check connection string in .env
-# Format: postgresql://user:password@host:port/database
-```
-
-### Debug Mode
-
-```bash
-# Run with debug logging
-DEBUG=* npm start
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run linter
-npm run lint
-```
-
-## Performance Optimization
-
-### Caching
-
-Enable caching for processed images:
-
-```env
-CACHE_ENABLED=true
-CACHE_TTL=86400
-CACHE_PROVIDER=redis
-```
-
-### Compression
-
-Adjust compression settings:
-
-```env
-COMPRESSION_LEVEL=9
-COMPRESSION_ENABLED=true
-```
-
-### Scaling
-
-For production environments:
-
-```bash
-# Use clustering
-NODE_CLUSTER=true
-CLUSTER_WORKERS=4
-```
-
-## Security
-
-- Always use HTTPS in production
-- Validate and sanitize all user inputs
-- Keep dependencies updated: `npm audit fix`
-- Implement rate limiting
-- Use strong environment variable secrets
-- Regularly scan for vulnerabilities: `npm audit`
 
 ## Contributing
 
+We welcome contributions! Please follow these steps:
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m 'Add your feature'`
-4. Push to branch: `git push origin feature/your-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin feature/your-feature`
 5. Submit a pull request
 
-## Support
-
-For issues, questions, or suggestions:
-
-- **Issues**: https://github.com/freeamit/web2apk-image-studio/issues
-- **Discussions**: https://github.com/freeamit/web2apk-image-studio/discussions
-- **Email**: support@example.com
+Please ensure:
+- Code follows the existing style guide
+- Tests pass: `npm test`
+- Documentation is updated
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Support
+
+For issues, questions, or suggestions:
+- **GitHub Issues**: [Report a bug](https://github.com/freeamit/web2apk-image-studio/issues)
+- **Email**: support@example.com
+- **Documentation**: [Wiki](https://github.com/freeamit/web2apk-image-studio/wiki)
+
+## Changelog
+
+### Version 1.0.0 (2025-12-30)
+- Initial release
+- Web to APK conversion functionality
+- Image processing capabilities
+- Docker support
+- Comprehensive documentation
+
 ---
 
-**Last Updated**: December 30, 2025
+**Last Updated**: 2025-12-30
 
-**Maintained by**: freeamit
+Made with ❤️ by the Web2APK Team
