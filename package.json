@@ -1,41 +1,26 @@
 {
   "name": "web2apk-image-studio",
-  "version": "1.0.0",
-  "description": "Web2APK Image Studio - Image processing and editing application",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": false,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css}\""
+    "test": "node --test tests/*.test.js"
   },
-  "keywords": [
-    "web2apk",
-    "image-studio",
-    "image-processing",
-    "react"
-  ],
-  "author": "freeamit",
-  "license": "MIT",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "^0.263.1",
-    "@google/generative-ai": "^0.1.3"
+    "lucide-react": "^0.263.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.1.0",
     "vite": "^5.0.0",
-    "eslint": "^8.50.0",
-    "eslint-plugin-react": "^7.33.0",
-    "prettier": "^3.0.0"
+    "typescript": "^5.4.0"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
-  }
+    "node": ">=18"
+  },
+  "license": "MIT"
 }
